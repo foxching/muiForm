@@ -4,6 +4,7 @@ import SelectInput from "./SelectInput";
 import CheckInput from "./CheckInput";
 import DateInput from "./DateInput";
 import Button from "./Button";
+import ActionButton from "./ActionButton";
 
 export const Controls = {
   Input,
@@ -11,5 +12,6 @@ export const Controls = {
   SelectInput,
   CheckInput,
   DateInput,
-  Button
+  Button,
+  ActionButton
 };

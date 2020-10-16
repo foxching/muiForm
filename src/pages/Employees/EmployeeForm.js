@@ -17,7 +17,9 @@ const initialState = {
   isPermanent: false
 };
 
-const EmployeeForm = () => {
+const EmployeeForm = (props) => {
+  const { addOrEdit, recordForEdit } = props
+
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
     if ("fullName" in fieldValues)
@@ -49,12 +51,19 @@ const EmployeeForm = () => {
     e.preventDefault();
 
     if (validate()) {
-      employeeService.insertEmployee(values);
-      resetForm();
+      addOrEdit(values, resetForm)
     }
   };
 
-  const { values, handleInputChange, errors, setErrors, resetForm } = useForm(
+  useEffect(() => {
+    if (recordForEdit != null) {
+      setValues({
+        ...recordForEdit
+      })
+    }
+  }, [recordForEdit])
+
+  const { values, setValues, handleInputChange, errors, setErrors, resetForm } = useForm(
     initialState,
     true,
     validate
