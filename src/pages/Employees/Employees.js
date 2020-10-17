@@ -5,6 +5,8 @@ import PageHeader from "../../components/PageHeader";
 import EmployeeForm from "./EmployeeForm";
 import { useTable } from "../../components/useTable"
 import Popup from "../../components/Popup"
+import Notification from "../../components/Notification"
+import ConfirmDialog from "../../components/ConfirmDialog"
 
 import * as employeeService from "../../data/services"
 import { Controls } from "../../components/controls/Controls";
@@ -37,16 +39,20 @@ const headCells = [
   { id: "departmentId", label: "Department" },
   { id: "actions", label: "Action", disableSorting: true }
 ]
+
+
 const Employees = () => {
   const classes = useStyles();
   const [recordForEdit, setRecordForEdit] = useState(null)
   const [records, setRecords] = useState(employeeService.getAllEmployees())
   const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
   const [open, setOpen] = useState(false)
+  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
 
 
   const addOrEdit = (employee, resetForm) => {
-    if (employee.id == 0) {
+    if (employee.id === 0) {
       employeeService.insertEmployee(employee);
     } else {
       employeeService.updateEmployee(employee);
@@ -55,13 +61,18 @@ const Employees = () => {
     setRecordForEdit(null)
     setOpen(false)
     setRecords(employeeService.getAllEmployees())
+    setNotify({
+      isOpen: true,
+      message: 'Submitted Successfully',
+      type: 'success'
+    })
   }
 
   const handleSearch = e => {
     let target = e.target;
     setFilterFn({
       fn: items => {
-        if (target.value == "")
+        if (target.value === "")
           return items;
         else
           return items.filter(x => x.fullName.toLowerCase().includes(target.value))
@@ -73,6 +84,21 @@ const Employees = () => {
     setRecordForEdit(item)
     setOpen(true)
   }
+
+  const onDelete = id => {
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false
+    })
+    employeeService.deleteEmployee(id);
+    setRecords(employeeService.getAllEmployees())
+    setNotify({
+      isOpen: true,
+      message: 'Deleted Successfully',
+      type: 'error'
+    })
+  }
+
 
   const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } = useTable(records, headCells, filterFn)
   return (
@@ -120,7 +146,16 @@ const Employees = () => {
                     <EditOutlinedIcon fontSize="small" />
                   </Controls.ActionButton>
                   <Controls.ActionButton
-                    color="secondary">
+                    color="secondary"
+                    onClick={() => {
+                      setConfirmDialog({
+                        isOpen: true,
+                        title: 'Are you sure to delete this record?',
+                        subTitle: "You can't undo this operation",
+                        onConfirm: () => { onDelete(item.id) }
+                      })
+                    }}
+                  >
                     <CloseIcon fontSize="small" />
                   </Controls.ActionButton>
                 </TableCell>
@@ -130,9 +165,25 @@ const Employees = () => {
         </TblContainer>
         <TblPagination />
       </Paper>
-      <Popup title="Employee Form" open={open} setOpen={setOpen} >
-        <EmployeeForm addOrEdit={addOrEdit} recordForEdit={recordForEdit} />
+      <Popup
+        title="Employee Form"
+        open={open}
+        setOpen={setOpen}
+      >
+        <EmployeeForm
+          addOrEdit={addOrEdit}
+          recordForEdit={recordForEdit}
+        />
       </Popup>
+      <Notification
+        notify={notify}
+        setNotify={setNotify}
+      />
+      <ConfirmDialog
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+      />
+
     </>
   );
 };

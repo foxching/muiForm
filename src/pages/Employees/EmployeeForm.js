@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Grid } from "@material-ui/core";
 import { useForm, Form } from "../../components/useForm";
 import { Controls } from "../../components/controls/Controls";
@@ -61,7 +61,7 @@ const EmployeeForm = (props) => {
         ...recordForEdit
       })
     }
-  }, [recordForEdit])
+  }, [recordForEdit, setValues])
 
   const { values, setValues, handleInputChange, errors, setErrors, resetForm } = useForm(
     initialState,

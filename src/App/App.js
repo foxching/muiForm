@@ -7,8 +7,6 @@ import SideMenu from "../components/SideMenu";
 import Header from "../components/Header";
 import Employees from "../pages/Employees/Employees";
 
-import "../styles.css";
-
 const theme = createMuiTheme({
   palette: {
     primary: {
