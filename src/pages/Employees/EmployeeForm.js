@@ -18,7 +18,7 @@ const initialState = {
 };
 
 const EmployeeForm = (props) => {
-  const { addOrEdit, recordForEdit } = props
+  const { addOrEdit, recordForEdit } = props;
 
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
@@ -51,23 +51,27 @@ const EmployeeForm = (props) => {
     e.preventDefault();
 
     if (validate()) {
-      addOrEdit(values, resetForm)
+      addOrEdit(values, resetForm);
     }
   };
+
+  const {
+    values,
+    setValues,
+    handleInputChange,
+    errors,
+    setErrors,
+    resetForm
+  } = useForm(initialState, true, validate);
 
   useEffect(() => {
     if (recordForEdit != null) {
       setValues({
         ...recordForEdit
-      })
+      });
     }
-  }, [recordForEdit, setValues])
+  }, [recordForEdit, setValues]);
 
-  const { values, setValues, handleInputChange, errors, setErrors, resetForm } = useForm(
-    initialState,
-    true,
-    validate
-  );
   return (
     <Form onSubmit={handleSubmit}>
       <Grid container>
