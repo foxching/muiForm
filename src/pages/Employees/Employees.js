@@ -1,22 +1,29 @@
 import React, { useState } from "react";
-import { Paper, makeStyles, TableBody, TableRow, TableCell, Toolbar, InputAdornment } from "@material-ui/core";
+import {
+  Paper,
+  makeStyles,
+  TableBody,
+  TableRow,
+  TableCell,
+  Toolbar,
+  InputAdornment
+} from "@material-ui/core";
 
-import PageHeader from "../../components/PageHeader";
-import EmployeeForm from "./EmployeeForm";
-import { useTable } from "../../components/useTable"
-import Popup from "../../components/Popup"
-import Notification from "../../components/Notification"
-import ConfirmDialog from "../../components/ConfirmDialog"
+import PageHeader from "../../components/layout/PageHeader";
+import EmployeeForm from "../../components/form/EmployeeForm";
+import { useTable } from "../../hooks/useTable";
+import Popup from "../../components/ui/Popup";
+import Notification from "../../components/ui/Notification";
+import ConfirmDialog from "../../components/ui/ConfirmDialog";
 
-import * as employeeService from "../../data/services"
+import * as employeeService from "../../data/services";
 import { Controls } from "../../components/controls/Controls";
 
 import SearchIcon from "@material-ui/icons/Search";
-import AddIcon from "@material-ui/icons/Add"
+import AddIcon from "@material-ui/icons/Add";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import CloseIcon from '@material-ui/icons/Close';
-
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
+import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -38,18 +45,28 @@ const headCells = [
   { id: "mobile", label: "Mobile Number" },
   { id: "departmentId", label: "Department" },
   { id: "actions", label: "Action", disableSorting: true }
-]
-
+];
 
 const Employees = () => {
   const classes = useStyles();
-  const [recordForEdit, setRecordForEdit] = useState(null)
-  const [records, setRecords] = useState(employeeService.getAllEmployees())
-  const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
-  const [open, setOpen] = useState(false)
-  const [notify, setNotify] = useState({ isOpen: false, message: '', type: '' })
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
-
+  const [recordForEdit, setRecordForEdit] = useState(null);
+  const [records, setRecords] = useState(employeeService.getAllEmployees());
+  const [filterFn, setFilterFn] = useState({
+    fn: (items) => {
+      return items;
+    }
+  });
+  const [open, setOpen] = useState(false);
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: ""
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: ""
+  });
 
   const addOrEdit = (employee, resetForm) => {
     if (employee.id === 0) {
@@ -58,49 +75,54 @@ const Employees = () => {
       employeeService.updateEmployee(employee);
     }
     resetForm();
-    setRecordForEdit(null)
-    setOpen(false)
-    setRecords(employeeService.getAllEmployees())
+    setRecordForEdit(null);
+    setOpen(false);
+    setRecords(employeeService.getAllEmployees());
     setNotify({
       isOpen: true,
-      message: 'Submitted Successfully',
-      type: 'success'
-    })
-  }
+      message: "Submitted Successfully",
+      type: "success"
+    });
+  };
 
-  const handleSearch = e => {
+  const handleSearch = (e) => {
     let target = e.target;
     setFilterFn({
-      fn: items => {
-        if (target.value === "")
-          return items;
+      fn: (items) => {
+        if (target.value === "") return items;
         else
-          return items.filter(x => x.fullName.toLowerCase().includes(target.value))
+          return items.filter((x) =>
+            x.fullName.toLowerCase().includes(target.value)
+          );
       }
-    })
-  }
+    });
+  };
 
-  const openInPopUp = item => {
-    setRecordForEdit(item)
-    setOpen(true)
-  }
+  const openInPopUp = (item) => {
+    setRecordForEdit(item);
+    setOpen(true);
+  };
 
-  const onDelete = id => {
+  const onDelete = (id) => {
     setConfirmDialog({
       ...confirmDialog,
       isOpen: false
-    })
+    });
     employeeService.deleteEmployee(id);
-    setRecords(employeeService.getAllEmployees())
+    setRecords(employeeService.getAllEmployees());
     setNotify({
       isOpen: true,
-      message: 'Deleted Successfully',
-      type: 'error'
-    })
-  }
+      message: "Deleted Successfully",
+      type: "error"
+    });
+  };
 
-
-  const { TblContainer, TblHead, TblPagination, recordsAfterPagingAndSorting } = useTable(records, headCells, filterFn)
+  const {
+    TblContainer,
+    TblHead,
+    TblPagination,
+    recordsAfterPagingAndSorting
+  } = useTable(records, headCells, filterFn);
   return (
     <>
       <PageHeader
@@ -114,25 +136,30 @@ const Employees = () => {
             label="Search Employees"
             className={classes.searchInput}
             InputProps={{
-              startAdornment: (<InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>)
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              )
             }}
             onChange={handleSearch}
           />
 
           <Controls.Button
-            text='Add New'
+            text="Add New"
             variant="outlined"
             startIcon={<AddIcon />}
             className={classes.newButton}
-            onClick={() => { setOpen(true); setRecordForEdit(null) }}
+            onClick={() => {
+              setOpen(true);
+              setRecordForEdit(null);
+            }}
           />
         </Toolbar>
         <TblContainer>
           <TblHead />
           <TableBody>
-            {recordsAfterPagingAndSorting().map(item => (
+            {recordsAfterPagingAndSorting().map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.fullName}</TableCell>
                 <TableCell>{item.email}</TableCell>
@@ -150,10 +177,12 @@ const Employees = () => {
                     onClick={() => {
                       setConfirmDialog({
                         isOpen: true,
-                        title: 'Are you sure to delete this record?',
+                        title: "Are you sure to delete this record?",
                         subTitle: "You can't undo this operation",
-                        onConfirm: () => { onDelete(item.id) }
-                      })
+                        onConfirm: () => {
+                          onDelete(item.id);
+                        }
+                      });
                     }}
                   >
                     <CloseIcon fontSize="small" />
@@ -165,25 +194,14 @@ const Employees = () => {
         </TblContainer>
         <TblPagination />
       </Paper>
-      <Popup
-        title="Employee Form"
-        open={open}
-        setOpen={setOpen}
-      >
-        <EmployeeForm
-          addOrEdit={addOrEdit}
-          recordForEdit={recordForEdit}
-        />
+      <Popup title="Employee Form" open={open} setOpen={setOpen}>
+        <EmployeeForm addOrEdit={addOrEdit} recordForEdit={recordForEdit} />
       </Popup>
-      <Notification
-        notify={notify}
-        setNotify={setNotify}
-      />
+      <Notification notify={notify} setNotify={setNotify} />
       <ConfirmDialog
         confirmDialog={confirmDialog}
         setConfirmDialog={setConfirmDialog}
       />
-
     </>
   );
 };

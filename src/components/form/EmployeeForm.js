@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Grid } from "@material-ui/core";
-import { useForm, Form } from "../../components/useForm";
+import { useForm, Form } from "../../hooks/useForm";
 import { Controls } from "../../components/controls/Controls";
 import { genderItems } from "../../data/gender";
 import * as employeeService from "../../data/services";
