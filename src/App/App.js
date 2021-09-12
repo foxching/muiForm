@@ -3,8 +3,8 @@ import { CssBaseline, createMuiTheme } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { makeStyles } from "@material-ui/core/styles";
 
-import SideMenu from "../components/SideMenu";
-import Header from "../components/Header";
+import SideMenu from "../components/layout/SideMenu";
+import Header from "../components/layout/Header";
 import Employees from "../pages/Employees/Employees";
 
 const theme = createMuiTheme({
